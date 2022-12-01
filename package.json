@@ -1,0 +1,19 @@
+{
+  "name": "advent-of-code-22",
+  "version": "1.0.0",
+  "description": "Just Ash's Advent of Code Solutions! 😎",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ash-LEE Thomp-SON! 🕺",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.11.10",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
