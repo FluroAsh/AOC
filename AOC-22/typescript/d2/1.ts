@@ -28,51 +28,55 @@ const scoreMap = {
 let playerScore = 0
 
 for (let str of inputArray) {
-  let shapes = str.split(' ')
-  playRound(shapes)
+  let columns = str.split(' ')
+  playRound(columns)
 }
 
-function playRound(shapes: Array<string>) {
-  const [enemyShape, playerShape] = shapes
+function playRound(columns: Array<string>) {
+  const [enemyChar, playerChar] = columns
 
-  if (shapeMap[enemyShape].shape === 'Rock') {
-    switch (shapeMap[playerShape].shape) {
+  const enemyShape = shapeMap[enemyChar].shape
+  const playerShape = shapeMap[playerChar].shape
+  const playerShapeValue = shapeMap[playerChar].value
+
+  if (enemyShape === 'Rock') {
+    switch (playerShape) {
       case 'Rock':
-        playerScore += scoreMap.draw + shapeMap[playerShape].value
+        playerScore += scoreMap.draw + playerShapeValue
         break
       case 'Paper':
-        playerScore += scoreMap.win + shapeMap[playerShape].value
+        playerScore += scoreMap.win + playerShapeValue
         break
       case 'Scissors':
-        playerScore += scoreMap.lost + shapeMap[playerShape].value
+        playerScore += scoreMap.lost + playerShapeValue
         break
     }
   }
 
-  if (shapeMap[enemyShape].shape === 'Paper') {
-    switch (shapeMap[playerShape].shape) {
+  if (enemyShape === 'Paper') {
+    switch (playerShape) {
       case 'Rock':
-        playerScore += scoreMap.lost + shapeMap[playerShape].value
+        playerScore += scoreMap.lost + playerShapeValue
         break
       case 'Paper':
-        playerScore += scoreMap.draw + shapeMap[playerShape].value
+        playerScore += scoreMap.draw + playerShapeValue
         break
       case 'Scissors':
-        playerScore += scoreMap.win + shapeMap[playerShape].value
+        playerScore += scoreMap.win + playerShapeValue
         break
     }
   }
 
-  if (shapeMap[enemyShape].shape === 'Scissors') {
-    switch (shapeMap[playerShape].shape) {
+  if (enemyShape === 'Scissors') {
+    switch (playerShape) {
       case 'Rock':
-        playerScore += scoreMap.win + shapeMap[playerShape].value
+        playerScore += scoreMap.win + playerShapeValue
         break
       case 'Paper':
-        playerScore += scoreMap.lost + shapeMap[playerShape].value
+        playerScore += scoreMap.lost + playerShapeValue
         break
       case 'Scissors':
-        playerScore += scoreMap.draw + shapeMap[playerShape].value
+        playerScore += scoreMap.draw + playerShapeValue
         break
     }
   }
@@ -81,8 +85,8 @@ function playRound(shapes: Array<string>) {
 
 function printResult(enemyShape: string, playerShape: string) {
   console.log(
-    `The enemy chose: ${shapeMap[enemyShape].shape}
-    You chose... ${shapeMap[playerShape].shape}
-    Your total score is: ${playerScore}`
+    `The enemy chose: ${enemyShape}
+    You chose... ${playerShape}
+    Your total score is: ${playerScore}\n`
   )
 }
