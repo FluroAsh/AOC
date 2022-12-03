@@ -34,19 +34,20 @@ for (let str of inputArray) {
 function playRound(columns: Array<string>) {
   const [enemyChar, resultChar] = columns
 
-  const enemyShape = shapeMap[enemyChar].shape
   const requiredResult = resultMap[resultChar].result
+  const resultScore = resultMap[resultChar].value
+  const enemyShape = shapeMap[enemyChar].shape
 
   if (enemyShape === 'Rock') {
     switch (requiredResult) {
       case 'Lose':
-        playerScore += resultMap[resultChar].value + shapeMap['C'].value
+        playerScore += resultScore + shapeMap['C'].value
         break
       case 'Draw':
-        playerScore += resultMap[resultChar].value + shapeMap['A'].value
+        playerScore += resultScore + shapeMap['A'].value
         break
       case 'Win':
-        playerScore += resultMap[resultChar].value + shapeMap['B'].value
+        playerScore += resultScore + shapeMap['B'].value
         break
     }
   }
@@ -54,13 +55,13 @@ function playRound(columns: Array<string>) {
   if (enemyShape === 'Paper') {
     switch (requiredResult) {
       case 'Lose':
-        playerScore += resultMap[resultChar].value + shapeMap['A'].value
+        playerScore += resultScore + shapeMap['A'].value
         break
       case 'Draw':
-        playerScore += resultMap[resultChar].value + shapeMap['B'].value
+        playerScore += resultScore + shapeMap['B'].value
         break
       case 'Win':
-        playerScore += resultMap[resultChar].value + shapeMap['C'].value
+        playerScore += resultScore + shapeMap['C'].value
         break
     }
   }
@@ -68,13 +69,13 @@ function playRound(columns: Array<string>) {
   if (enemyShape === 'Scissors') {
     switch (requiredResult) {
       case 'Lose':
-        playerScore += resultMap[resultChar].value + shapeMap['B'].value
+        playerScore += resultScore + shapeMap['B'].value
         break
       case 'Draw':
-        playerScore += resultMap[resultChar].value + shapeMap['C'].value
+        playerScore += resultScore + shapeMap['C'].value
         break
       case 'Win':
-        playerScore += resultMap[resultChar].value + shapeMap['A'].value
+        playerScore += resultScore + shapeMap['A'].value
         break
     }
   }
