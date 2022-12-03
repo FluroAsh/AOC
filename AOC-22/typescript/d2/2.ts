@@ -27,8 +27,8 @@ const resultMap: IResultMap = {
 let playerScore = 0
 
 for (let str of inputArray) {
-  let cols = str.split(' ')
-  playRound(cols)
+  let columns = str.split(' ')
+  playRound(columns)
 }
 
 function playRound(columns: Array<string>) {
