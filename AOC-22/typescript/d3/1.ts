@@ -1,7 +1,7 @@
 import fs from 'fs'
 
 const input = fs.readFileSync(__dirname + '/input.txt', 'utf8')
-const inputArray = input.split(/\r?\n/)
+const inputArray = input.split(/\n/)
 
 function splitLine(line: string): string[] {
   const mid = line.length / 2
