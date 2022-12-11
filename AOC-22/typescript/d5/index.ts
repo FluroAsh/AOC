@@ -48,52 +48,45 @@ for (let move of rawMoveSet) {
   })
 }
 
-function executeMoves(
-  localStacks: IStacks,
-  moveSet: IMoves,
-  keepOrder?: boolean
-) {
-  const { count, from, to } = moveSet
-
-  if (keepOrder) {
-    const crates = localStacks[from].splice(-count, count) // No. of crates to 'pick up' (keeping original order)
-    localStacks[to] = localStacks[to].concat(crates) // adds to the END of the array...
-  }
-
-  if (!keepOrder) {
-    for (let i = 0; i < count; i++) {
-      let crate = localStacks[from].pop()
-      if (crate) {
-        localStacks[to].push(crate)
-      }
-    }
-  }
-}
-
-function partOne(): ITopCrates {
+function executeMoves(keepOrder?: boolean): IStacks {
   // FYI: Deep copy for when executing Part Two - prevents mutation of original stacks object
   const localStacks: IStacks = JSON.parse(JSON.stringify(stacks))
 
   for (let moveSet of parsedMoves) {
-    executeMoves(localStacks, moveSet)
+    const { count, from, to } = moveSet
+
+    if (keepOrder) {
+      const crates = localStacks[from].splice(-count, count) // No. of crates to 'pick up' (keeping original order)
+      localStacks[to] = localStacks[to].concat(crates) // adds to the END of the array...
+    }
+
+    if (!keepOrder) {
+      for (let i = 0; i < count; i++) {
+        let crate = localStacks[from].pop()
+        if (crate) {
+          localStacks[to].push(crate)
+        }
+      }
+    }
   }
+  return localStacks
+}
+
+function partOne(): ITopCrates {
+  const movedStacks = executeMoves()
 
   return {
-    PartOne: Object.values(localStacks)
+    PartOne: Object.values(movedStacks)
       .map((column) => column.slice(-1))
       .join('')
   }
 }
 
 function partTwo(): ITopCrates {
-  const localStacks: IStacks = JSON.parse(JSON.stringify(stacks))
-
-  for (let moveSet of parsedMoves) {
-    executeMoves(localStacks, moveSet, true)
-  }
+  const movedStacks = executeMoves(true)
 
   return {
-    PartTwo: Object.values(localStacks)
+    PartTwo: Object.values(movedStacks)
       .map((column) => column.slice(-1))
       .join('')
   }
