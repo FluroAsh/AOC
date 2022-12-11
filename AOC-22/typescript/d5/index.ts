@@ -35,16 +35,16 @@ for (let line of parsedStacks) {
 const parsedMoves: IMoves[] = []
 
 for (let move of rawMoveSet) {
-  const match = move.match(/\d+/g)
+  const match = move.match(/\d+/g)?.map(Number)
 
   if (!match) {
     continue // again, avoids type errors - same scenario as pop
   }
 
   parsedMoves.push({
-    count: parseInt(match[0]),
-    from: parseInt(match[1]),
-    to: parseInt(match[2])
+    count: match[0],
+    from: match[1],
+    to: match[2]
   })
 }
 
@@ -52,7 +52,7 @@ function executeMoves(
   localStacks: IStacks,
   moveSet: IMoves,
   keepOrder?: boolean
-): void {
+) {
   const { count, from, to } = moveSet
 
   if (keepOrder) {
@@ -71,7 +71,7 @@ function executeMoves(
 }
 
 function partOne(): ITopCrates {
-  // FYI: Deep copy for when we execute Part Two - prevents mutation of original stacks object
+  // FYI: Deep copy for when executing Part Two - prevents mutation of original stacks object
   const localStacks: IStacks = JSON.parse(JSON.stringify(stacks))
 
   for (let moveSet of parsedMoves) {
@@ -87,6 +87,7 @@ function partOne(): ITopCrates {
 
 function partTwo(): ITopCrates {
   const localStacks: IStacks = JSON.parse(JSON.stringify(stacks))
+
   for (let moveSet of parsedMoves) {
     executeMoves(localStacks, moveSet, true)
   }
