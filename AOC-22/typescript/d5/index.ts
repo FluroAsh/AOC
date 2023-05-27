@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { IStacks, IMoves, ITopCrates } from './index.types'
+import type { IStacks, IMoves, ITopCrates } from './d5'
 
 // 🥴 Input Parsing Madness...
 const inputs = fs.readFileSync(__dirname + '/input.txt', 'utf8')
