@@ -1,4 +1,6 @@
 import * as fs from 'fs'
+console.clear()
+// answer is: "56017"
 
 type LineMatchGroups = {
   [key: string]: {
@@ -8,32 +10,10 @@ type LineMatchGroups = {
   }[]
 }
 
-function replaceWordNumbers(lineMatchGroups: LineMatchGroups) {
-  const clonedLines = lines
-
-  for (const [lineNumber, numberMatches] of Object.entries(lineMatchGroups)) {
-    numberMatches.forEach(({ originalValue, newValue }) => {
-      lines[lineNumber] = lines[lineNumber].replace(originalValue, newValue)
-    })
-  }
-  return clonedLines
-}
-
-function findLinePatternSum(numberfiedLines: string[]) {
-  return numberfiedLines.reduce((acc, line) => {
-    const nums = [...line].filter((char) => Number(char))
-    const [first, last] = [nums[0], nums[nums.length - 1]] // grab first and last numbers
-    const total = parseInt(first.concat(last))
-
-    // console.log(total)
-    return (acc += total)
-  }, 0)
-}
-
 // Your code goes here. Good luck!
 const input = fs.readFileSync('input.txt', 'utf-8')
 
-const numRegex = /(one|two|three|four|five|six|seven|eight|nine)/g
+const numRegex = /(?=(\d|zero|one|two|three|four|five|six|seven|eight|nine))/g
 const numMap = {
   one: '1',
   two: '2',
@@ -47,27 +27,25 @@ const numMap = {
 }
 
 const lines = input.split('\n')
+// We just have to return an array of the concatenated numbers (eg: 1 and 1 = 11)
 
-const lineMatchGroups: LineMatchGroups = lines.reduce((acc, line, index) => {
-  let match
+// Update the numbers (works fine)
+const nums = lines.map((line) => {
+  const matches = line.matchAll(numRegex)
 
-  // Check each line for a `numRegex` match
-  // If there's a match, store metadata about the match (for replacing it later)
-  while ((match = numRegex.exec(line)) !== null) {
-    const lineNumber = index
+  let first = matches.next().value[1]
+  let last = first
 
-    // If it's a match, add it to the Object, along with previous matches...
-    const matchObj = {
-      lineNumber,
-      originalValue: match[0],
-      newValue: numMap[match[0]]
-    }
-
-    acc[lineNumber] = acc[lineNumber] ? [...acc[lineNumber], matchObj] : [matchObj]
+  for (const match of matches) {
+    last = match[1]
   }
-  return acc
-}, {})
+  const nums = [numMap[first] ?? first, numMap[last] ?? last]
+  return nums.join('')
+})
 
-const numberfiedLines = replaceWordNumbers(lineMatchGroups)
-const answer = findLinePatternSum(numberfiedLines)
-console.log('Woohoo! The answer is: ', answer)
+const sum = nums.reduce((acc, num) => {
+  acc += parseInt(num)
+  return acc
+}, 0)
+
+console.log(sum)
