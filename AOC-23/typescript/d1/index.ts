@@ -36,12 +36,13 @@ const numMap = {
 const lines = input.split('\n')
 
 const calibrationValues = lines.map((_line, idx) => {
+  const clonedLines = [...lines] // Let's not mutate the original array! 👑
   let firstNum
   let lastNum
 
   // Shiny replacer function 🤔 Haven't used this before... (saves us from having to use `.matchAll` 😉)
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
-  lines[idx].replace(numRegex, (_match, p1) => {
+  clonedLines[idx].replace(numRegex, (_match, p1) => {
     if (!firstNum) firstNum = numMap[p1] ?? p1
     lastNum = numMap[p1] ?? p1
     return numMap[p1] ?? p1
