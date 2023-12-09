@@ -1,6 +1,5 @@
 import * as fs from 'fs'
 console.clear()
-// answer is: "56017"
 
 type LineMatchGroups = {
   [key: string]: {
@@ -10,9 +9,17 @@ type LineMatchGroups = {
   }[]
 }
 
-// Your code goes here. Good luck!
 const input = fs.readFileSync('input.txt', 'utf-8')
 
+/**
+ * NOTE: (for future me)...
+ * I'm using a positive lookahead assertion here to capture any **overlapping matches**
+ * `(eg: "zerone", "nineight" etc)`
+ *
+ * It's basically akin to saying:
+ * "Find matches for this pattern, but don't consume the matches
+ * so that we can find overlapping matches in the remaining string"
+ */
 const numRegex = /(?=(\d|zero|one|two|three|four|five|six|seven|eight|nine))/g
 const numMap = {
   one: '1',
@@ -27,25 +34,20 @@ const numMap = {
 }
 
 const lines = input.split('\n')
-// We just have to return an array of the concatenated numbers (eg: 1 and 1 = 11)
 
-// Update the numbers (works fine)
-const nums = lines.map((line) => {
-  const matches = line.matchAll(numRegex)
+const calibrationValues = lines.map((_line, idx) => {
+  let firstNum
+  let lastNum
 
-  let first = matches.next().value[1]
-  let last = first
-
-  for (const match of matches) {
-    last = match[1]
-  }
-  const nums = [numMap[first] ?? first, numMap[last] ?? last]
-  return nums.join('')
+  // Shiny replacer function 🤔 Haven't used this before... (saves us from having to use `.matchAll` 😉)
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+  lines[idx].replace(numRegex, (_match, p1) => {
+    if (!firstNum) firstNum = numMap[p1] ?? p1
+    lastNum = numMap[p1] ?? p1
+    return numMap[p1] ?? p1
+  })
+  return firstNum + lastNum
 })
 
-const sum = nums.reduce((acc, num) => {
-  acc += parseInt(num)
-  return acc
-}, 0)
-
-console.log(sum)
+const solution = calibrationValues.reduce((acc, num) => acc + parseInt(num), 0)
+console.log('total >', solution)
