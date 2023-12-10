@@ -1,15 +1,5 @@
-import * as fs from 'fs'
+import { readInput } from '@/utils'
 console.clear()
-
-type LineMatchGroups = {
-  [key: string]: {
-    lineNumber: number
-    originalValue: string
-    newValue: string
-  }[]
-}
-
-const input = fs.readFileSync('input.txt', 'utf-8')
 
 /**
  * NOTE: (for future me)...
@@ -33,6 +23,7 @@ const numMap = {
   nine: '9'
 }
 
+const input = readInput(import.meta.url)
 const lines = input.split('\n')
 
 const calibrationValues = lines.map((_line, idx) => {

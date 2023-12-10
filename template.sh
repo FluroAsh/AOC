@@ -22,7 +22,7 @@ touch "$index_file"
 
 # Add some boilerplate to the index.ts file
 text=$(cat << END
-import fs from 'fs'
+import { readInput } from '@/utils'
 
 // Your code goes here. Good luck!
 END
