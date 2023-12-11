@@ -39,5 +39,28 @@ function partOne() {
   return answer
 }
 
-day2.solve(partOne) // 2545
+function partTwo() {
+  const powers = []
+
+  // For each game, iterate over each subset & pick, updating the "requiredCount" Object
+  // Before calculating the power sum for the game and returning the sum of each games power total
+  Object.entries(parsedData).map(([_, subsets]) => {
+    const requiredCount = { red: 0, green: 0, blue: 0 }
+
+    subsets.forEach((subset) => {
+      subset.forEach((colorPick) => {
+        const [colorCount, colorName] = colorPick.split(' ')
+
+        requiredCount[colorName] =
+          requiredCount[colorName] < Number(colorCount) ? Number(colorCount) : requiredCount[colorName]
+      })
+    })
+    powers.push(requiredCount['red'] * requiredCount['green'] * requiredCount['blue'])
+  })
+
+  return powers.reduce((a, b) => a + b, 0)
+}
+
+day2.solve(partOne)
+day2.solve(partTwo)
 console.log(day2.answers)
