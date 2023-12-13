@@ -1,6 +1,5 @@
 import { readInput } from '@/utils'
 import Puzzle from '../Puzzle'
-console.clear()
 
 const input = readInput(import.meta.url)
 const day2 = new Puzzle(input)

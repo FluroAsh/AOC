@@ -13,12 +13,15 @@ export default class Puzzle {
   }
 
   solve(fn: () => string | number) {
-    console.time('⏰ Execution Runtime')
     const fnName = fn.name
     const partName = partMap[fnName]
 
+    console.clear()
+    console.time('⏰ Execution Runtime')
+
     console.log(`> Solving for "${partName}"`)
     this.answers[partName] = fn()
+
     console.timeEnd('⏰ Execution Runtime')
   }
 }

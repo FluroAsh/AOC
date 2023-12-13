@@ -1,5 +1,4 @@
 import { readInput } from '@/utils'
-console.clear()
 
 /**
  * NOTE: (for future me)...

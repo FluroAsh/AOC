@@ -1,6 +1,5 @@
 import { readInput } from '@/utils'
 import Puzzle from '../Puzzle'
-console.clear()
 
 const input = readInput(import.meta.url)
 const day3 = new Puzzle(input)
@@ -26,9 +25,6 @@ function getSymbolCoordinates() {
 }
 
 function partOne() {
-  // NOTE:
-  // For every number in a line, get the first and last number (as-well as index)
-  // Then check if it overlaps with a symbol on the same, previous or following row
   const symbolCoordinates = getSymbolCoordinates()
   const matches = []
 
@@ -42,8 +38,8 @@ function partOne() {
       const shouldPushMatch = hasNums && foundMatch && (char === '.' || isSymbol(char) || endOfLine)
 
       if (shouldPushMatch) {
-        if (endOfLine) numSequence.push(char)
-        // console.log('> Pushing', matchedNums, { char, matchFound: foundMatch })
+        if (endOfLine) numSequence.push(char) // push the current character (last char on the row)
+
         matches.push(numSequence.join(''))
         foundMatch = false
         numSequence = []
@@ -51,12 +47,11 @@ function partOne() {
 
       if (isDigit(char)) {
         numSequence.push(char)
-        // console.log('> Adding num >>', matchedNums) // when digit is found
       } else {
         numSequence = [] // Clear saved numbers if it's a Symbol or "."
       }
 
-      // Checking that the character row is located within 1 space of the Symbol in any direction
+      // Checking that the character is located within 1 space of the Symbol in any direction
       const charIsNeighbour = symbolCoordinates.find(
         (symbol) =>
           (symbol.row === charRow || symbol.row === charRow - 1 || symbol.row === charRow + 1) &&
