@@ -14,10 +14,10 @@ type SymbolCoordinates = [{ matchedString: string; row: number; col: number }]
 function getSymbolCoordinates() {
   const symbolStorage = []
 
-  lines.forEach(([...chars], i) => {
-    chars.forEach((char, k) => {
+  lines.forEach(([...chars], row) => {
+    chars.forEach((char, col) => {
       if (isSymbol(char)) {
-        symbolStorage.push({ matchedString: char, row: i, col: k })
+        symbolStorage.push({ matchedString: char, row, col })
       }
     })
   })
@@ -26,32 +26,32 @@ function getSymbolCoordinates() {
 
 function partOne() {
   const symbolCoordinates = getSymbolCoordinates()
-  const matches = []
+  const matchedNums = []
 
   lines.forEach(([...chars], charRow) => {
-    let numSequence = []
+    let numBuffer = []
     let foundMatch = false
 
     chars.forEach((char, charCol) => {
-      const hasNums = numSequence.length > 0
       const endOfLine = chars[charCol + 1] === undefined
-      const shouldPushMatch = hasNums && foundMatch && (char === '.' || isSymbol(char) || endOfLine)
-
-      if (shouldPushMatch) {
-        if (endOfLine) numSequence.push(char) // push the current character (last char on the row)
-
-        matches.push(numSequence.join(''))
-        foundMatch = false
-        numSequence = []
-      }
+      const shouldPushMatch = foundMatch && (char === '.' || isSymbol(char) || endOfLine)
 
       if (isDigit(char)) {
-        numSequence.push(char)
-      } else {
-        numSequence = [] // Clear saved numbers if it's a Symbol or "."
+        numBuffer.push(char)
       }
 
-      // Checking that the character is located within 1 space of the Symbol in any direction
+      // Continue to push numbers until we hit an invalid character, or reach the end of the line
+      if (shouldPushMatch) {
+        matchedNums.push(numBuffer.join(''))
+        foundMatch = false
+        numBuffer = []
+      }
+
+      if (!isDigit(char)) {
+        numBuffer = [] // Clear saved numbers from the buffer if current char is a Symbol or "."
+      }
+
+      // Checking that the character is located within 1 space of the Symbol in any direction (+ or - one row)
       const charIsNeighbour = symbolCoordinates.find(
         (symbol) =>
           (symbol.row === charRow || symbol.row === charRow - 1 || symbol.row === charRow + 1) &&
@@ -59,14 +59,13 @@ function partOne() {
       )
 
       if (charIsNeighbour && !isSymbol(char) && char !== '.') {
-        // console.log(' >> ✅ Match', char)
         foundMatch = true
       }
     })
   })
 
-  console.log('matches', matches)
-  return matches.reduce((a, b) => a + Number(b), 0)
+  console.log('matches', matchedNums)
+  return matchedNums.reduce((a, b) => a + Number(b), 0)
 }
 
 day3.solve(partOne) // 527144
