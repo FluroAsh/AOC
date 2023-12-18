@@ -6,17 +6,26 @@ const partMap = {
 export default class Puzzle {
   public input: string
   public answers: { [part: string]: string | number }
+  public consoleCleared: boolean
 
   constructor(input) {
     this.input = input
     this.answers = {}
+    this.consoleCleared = false
+  }
+
+  clearConsole() {
+    !this.consoleCleared && console.clear()
+    this.consoleCleared ||= true
   }
 
   solve(fn: () => string | number) {
     const fnName = fn.name
     const partName = partMap[fnName]
 
-    console.clear()
+    console.log('\n')
+    this.clearConsole()
+
     console.time('⏰ Execution Runtime')
 
     console.log(`> Solving for "${partName}"`)
