@@ -7,7 +7,6 @@ const day3 = new Puzzle(input)
 const lines = input.split('\n')
 
 const isSymbol = (char: string) => /[@#$%&*\/+\-=]/.test(char)
-const isDigit = (char: string) => /[0-9]/.test(char)
 
 type SymbolCoordinates = [{ matchedString: string; row: number; col: number }]
 
@@ -28,43 +27,37 @@ function partOne() {
   const symbolCoordinates = getSymbolCoordinates()
   const matchedNums = []
 
-  lines.forEach(([...chars], charRow) => {
-    let numBuffer = []
-    let foundMatch = false
+  lines.forEach(([...chars], lr) => {
+    let numsBuffer = ''
+    let matchedNum = false
 
-    chars.forEach((char, charCol) => {
-      const endOfLine = chars[charCol + 1] === undefined
-      const shouldPushMatch = foundMatch && (char === '.' || isSymbol(char) || endOfLine)
-
-      if (isDigit(char)) {
-        numBuffer.push(char)
+    chars.forEach((char, lc) => {
+      // Early return if we find a symbol or '.' character (only check digit characters)
+      if (isSymbol(char) || char === '.') {
+        numsBuffer = ''
+        matchedNum = false
+        return
       }
 
-      // Continue to push numbers until we hit an invalid character, or reach the end of the line
-      if (shouldPushMatch) {
-        matchedNums.push(numBuffer.join(''))
-        foundMatch = false
-        numBuffer = []
-      }
+      const endOfLine = lc === chars.length - 1
 
-      if (!isDigit(char)) {
-        numBuffer = [] // Clear saved numbers from the buffer if current char is a Symbol or "."
-      }
+      numsBuffer += char
 
-      // Checking that the character is located within 1 space of the Symbol in any direction (+ or - one row)
-      const charIsNeighbour = symbolCoordinates.find(
-        (symbol) =>
-          (symbol.row === charRow || symbol.row === charRow - 1 || symbol.row === charRow + 1) &&
-          (symbol.col === charCol || symbol.col === charCol - 1 || symbol.col === charCol + 1)
-      )
+      // Check if the digit is a neighbour of any of the identified symbols
+      // Return the obj (to store the col & row later)
+      const isAdjacent = symbolCoordinates.find((symbol) => {
+        return Math.abs(lr - symbol.row) <= 1 && Math.abs(lc - symbol.col) <= 1 // Abs to ensure we're always returning the correct difference in rows
+      })
 
-      if (charIsNeighbour && !isSymbol(char) && char !== '.') {
-        foundMatch = true
+      matchedNum ||= Boolean(isAdjacent)
+
+      if (matchedNum && (chars[lc + 1] === '.' || isSymbol(chars[lc + 1]) || endOfLine)) {
+        matchedNums.push(numsBuffer)
+        numsBuffer = ''
       }
     })
   })
 
-  console.log('matches', matchedNums)
   return matchedNums.reduce((a, b) => a + Number(b), 0)
 }
 
