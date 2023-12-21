@@ -93,7 +93,7 @@ function partTwo() {
       hasMatchedNum ||= Boolean(neighbourSymbol)
 
       if (hasMatchedNum && (chars[lc + 1] === '.' || isSymbol(chars[lc + 1]) || endOfLine)) {
-        // Eaiest way I could find to selectively store each unique gears' values from the parsed input
+        // Eaiest way I could find to selectively store an array of each unique gears' values from the parsed input
         const { gear, row, col } = neighbourSymbol
         const key = `${gear}-${row}-${col}`
         const parsedNumber = parseInt(numsBuffer)
