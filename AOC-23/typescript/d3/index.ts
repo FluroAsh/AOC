@@ -31,13 +31,15 @@ function partOne() {
 
   lines.forEach(([...chars], lr) => {
     let numsBuffer = ''
-    let matchedNum = false
+    let hasMatchedNum = false
+    let neighbourSymbol
 
     chars.forEach((char, lc) => {
-      // Early return if we find a symbol or '.' character (only check digit characters)
+      // Skip non-digit characters & reset state
       if (isSymbol(char) || char === '.') {
         numsBuffer = ''
-        matchedNum = false
+        hasMatchedNum = false
+        neighbourSymbol = undefined
         return
       }
 
@@ -46,14 +48,13 @@ function partOne() {
       numsBuffer += char
 
       // Check if the digit is a neighbour of any of the identified symbols
-      // Return the obj (to store the col & row later)
-      const isAdjacent = gearCoordinates.find((gear) => {
+      neighbourSymbol ??= gearCoordinates.find((gear) => {
         return Math.abs(lr - gear.row) <= 1 && Math.abs(lc - gear.col) <= 1 // Abs to ensure we're always returning the correct difference in rows
       })
 
-      matchedNum ||= Boolean(isAdjacent)
+      hasMatchedNum ||= Boolean(neighbourSymbol)
 
-      if (matchedNum && (chars[lc + 1] === '.' || isSymbol(chars[lc + 1]) || endOfLine)) {
+      if (hasMatchedNum && (chars[lc + 1] === '.' || isSymbol(chars[lc + 1]) || endOfLine)) {
         matchedNums.push(numsBuffer)
         numsBuffer = ''
       }
