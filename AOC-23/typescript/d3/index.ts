@@ -8,23 +8,25 @@ const lines = input.split('\n')
 
 const isSymbol = (char: string) => /[@#$%&*\/+\-=]/.test(char)
 
-type SymbolCoordinates = [{ matchedString: string; row: number; col: number }]
+type GearCoordinates = [{ gear: string; row: number; col: number }]
 
-function getSymbolCoordinates() {
-  const symbolStorage = []
+// TODO: Optimize both solutions to make use of an Object, with each row/col stored on it
+// so we can reference the specifc gear, rather than search every gear symbol/row col object.
+function getGearCords() {
+  const gearCoordinates = []
 
   lines.forEach(([...chars], row) => {
     chars.forEach((char, col) => {
       if (isSymbol(char)) {
-        symbolStorage.push({ matchedString: char, row, col })
+        gearCoordinates.push({ gear: char, row, col })
       }
     })
   })
-  return symbolStorage as SymbolCoordinates
+  return gearCoordinates as GearCoordinates
 }
 
 function partOne() {
-  const symbolCoordinates = getSymbolCoordinates()
+  const gearCoordinates = getGearCords()
   const matchedNums = []
 
   lines.forEach(([...chars], lr) => {
@@ -45,8 +47,8 @@ function partOne() {
 
       // Check if the digit is a neighbour of any of the identified symbols
       // Return the obj (to store the col & row later)
-      const isAdjacent = symbolCoordinates.find((symbol) => {
-        return Math.abs(lr - symbol.row) <= 1 && Math.abs(lc - symbol.col) <= 1 // Abs to ensure we're always returning the correct difference in rows
+      const isAdjacent = gearCoordinates.find((gear) => {
+        return Math.abs(lr - gear.row) <= 1 && Math.abs(lc - gear.col) <= 1 // Abs to ensure we're always returning the correct difference in rows
       })
 
       matchedNum ||= Boolean(isAdjacent)
@@ -61,5 +63,54 @@ function partOne() {
   return matchedNums.reduce((a, b) => a + Number(b), 0)
 }
 
-day3.solve(partOne) // 527144
+function partTwo() {
+  const gearCoordinates = getGearCords()
+  const neighborMap: { [key: string]: Array<number> } = {}
+
+  lines.forEach(([...chars], lr) => {
+    let numsBuffer = ''
+    let hasMatchedNum = false
+    let neighbourSymbol
+
+    chars.forEach((char, lc) => {
+      // Skip non-digit characters & reset state
+      if (isSymbol(char) || char === '.') {
+        numsBuffer = ''
+        hasMatchedNum = false
+        neighbourSymbol = undefined
+        return
+      }
+
+      const endOfLine = lc === chars.length - 1
+
+      numsBuffer += char
+
+      neighbourSymbol ??= gearCoordinates.find(
+        (gear) => Math.abs(lr - gear.row) <= 1 && Math.abs(lc - gear.col) <= 1 // Math.Abs to ensure we're returning a positive integer
+      )
+
+      hasMatchedNum ||= Boolean(neighbourSymbol)
+
+      if (hasMatchedNum && (chars[lc + 1] === '.' || isSymbol(chars[lc + 1]) || endOfLine)) {
+        // Eaiest way I could find to selectively store each unique gears' values from the parsed input
+        const { gear, row, col } = neighbourSymbol
+        const key = `${gear}-${row}-${col}`
+        const parsedNumber = parseInt(numsBuffer)
+
+        neighborMap[key] = neighborMap[key] ? [...neighborMap[key], parsedNumber] : [parsedNumber]
+        numsBuffer = ''
+      }
+    })
+  })
+
+  const total = Object.values(neighborMap).reduce((acc, numMatches) => {
+    if (numMatches.length < 2) return acc // MUST only have a pair of two numbers
+    return acc + numMatches[0] * numMatches[1]
+  }, 0)
+
+  return total
+}
+
+day3.solve(partOne)
+day3.solve(partTwo)
 console.log(day3.answers)
