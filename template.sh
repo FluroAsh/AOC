@@ -24,6 +24,10 @@ touch "$index_file"
 text=$(cat << END
 import { readInput } from '@/utils'
 
+import Puzzle from '../Puzzle'
+
+const input = readInput(import.meta.url)
+
 // Your code goes here. Good luck!
 END
 )
